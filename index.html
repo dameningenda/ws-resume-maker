@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ヴァイスシュヴァルツ 履歴書メーカー</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main-wrapper">
+
+    <div id="page-select" class="page active">
+        <h1>ヴァイスシュヴァルツ 履歴書メーカー</h1>
+        
+        <h2>🎨 カラーリングを選ぶ</h2>
+        <p class="instruction">作成する履歴書のベースカラーを選んでください。</p>
+        <div class="color-selector-buttons">
+            <button class="color-button color-default" data-color="default">ヴァイスカラー</button> 
+            <button class="color-button color-skyblue" data-color="skyblue">ブラウカラー</button> 
+            <button class="color-button color-pink" data-color="pink">ロゼカラー</button> 
+        </div>
+        
+        <h2>📝 テンプレートを選ぶ</h2>
+        <p class="instruction">内容に合わせてテンプレートを選んでください。</p>
+        
+        <div class="template-selector-buttons">
+            <button class="select-button" onclick="selectTemplate('template-a')">① シンプル</button>
+            <button class="select-button" onclick="selectTemplate('template-c')">② 交流重視</button>
+            <button class="select-button" onclick="selectTemplate('template-b')">③ 推し語り重視</button>
+        </div>
+    </div>
+
+    <div id="page-create" class="page">
+        <button class="back-button" onclick="goToPage('page-select')">← 選択に戻る</button>
+        
+        <div id="resume-form-area" class="resume-container">
+            </div>
+
+        <button id="generateImageButton" class="main-action-button">プレビュー</button>
+    </div>
+
+    <div id="page-result" class="page">
+        <button class="back-button" onclick="goToPage('page-create')">← 入力画面に戻る</button>
+
+        <h2>🎉 作成完了！</h2>
+        
+        <canvas id="resumeCanvas" width="800" height="1200"></canvas>
+        
+        <button id="downloadButton" class="main-action-button">画像保存</button>
+        
+        <div class="x-share-info">
+            <h3>X発信用のハッシュタグはこちらをコピー↡</h3>
+            <p class="copy-text" id="hashtagText">#ヴァイス履歴書 #ヴァイス好きと繋がりたい</p>
+            <button onclick="copyToClipboard('hashtagText')">コピー</button>
+        </div>
+    </div>
+
+</div>
+
+<div class="app-footer">
+    <p>
+        ヴァイスシュヴァルツ履歴書メーカー 
+        製作者: <a href="https://x.com/damedame_dayo" target="_blank">だめにんげんだ！</a>
+    </p>
+</div>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
