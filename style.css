@@ -1,293 +1,60 @@
-/* ============================================== */
-/* 🎨 カラー変数定義 */
-/* ============================================== */
-:root {
-    --base-bg-color: #111;
-    --base-text-color: #fff;
-    --base-border-color: #fff;
-    --input-bg-color: #333;
-    --display-bg-color: #000;
-}
-body.theme-skyblue {
-    --base-bg-color: #F8FAFF;
-    --base-text-color: #111;
-    --base-border-color: #333;
-    --input-bg-color: #e8eaf0;
-    --display-bg-color: #dde1ec;
-}
-body.theme-pink {
-    --base-bg-color: #FFEFEF;
-    --base-text-color: #111;
-    --base-border-color: #880000;
-    --input-bg-color: #f7e0e0;
-    --display-bg-color: #f0c9c9;
-}
+:root { --primary-bg: #111; --primary-text: #fff; --border-color: #fff; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans JP', sans-serif; }
+body { background-color: #f0f2f5; color: #333; }
+.container { width: 100%; max-width: 500px; margin: 0 auto; background: #fff; min-height: 100vh; display: flex; flex-direction: column; }
+header { background: #000; color: #fff; padding: 15px; text-align: center; }
+header h1 { font-size: 1.1rem; font-weight: 900; }
+.page { display: none; padding: 15px; }
+.page.active { display: block; }
 
+.selection-group { margin-bottom: 25px; }
+h2 { font-size: 1rem; margin-bottom: 12px; text-align: center; font-weight: 900; }
+.selection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.option-card { border: 2px solid #ddd; padding: 15px 5px; text-align: center; cursor: pointer; border-radius: 8px; font-weight: 900; font-size: 0.8rem; transition: 0.2s; }
+.option-card.selected { border: 4px solid #E60012 !important; box-shadow: 0 0 10px rgba(230,0,18,0.2); }
 
-/* ============================================== */
-/* 0. 全体共通のスタイル（スマホファースト） */
-/* ============================================== */
-body {
-    background-color: #f0f0f0;
-    font-family: sans-serif;
-    color: #333;
-    padding: 10px;
-    display: flex;
-    flex-direction: column; 
-    align-items: center;
-    transition: background-color 0.3s;
-}
-.main-wrapper {
-    width: 100%;
-    max-width: 600px; /* PCでも最大幅を制限 */
-    position: relative;
-}
-.page {
-    display: none;
-    padding: 20px 15px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-}
-.page.active {
-    display: block;
-}
-h1 {
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 20px;
-    color: #111;
-}
-h2 {
-    color: #111;
-    margin-top: 25px;
-    font-size: 20px;
-}
+.preview-outer { width: 100%; background: #eee; overflow: hidden; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ccc; }
+#capture-area { width: 1050px; height: 1350px; transform-origin: top left; }
+#resume-canvas { width: 1050px; height: 1350px; background: var(--primary-bg); color: var(--primary-text); padding: 40px 60px; display: flex; flex-direction: column; }
 
-/* ---------------------------------------------- */
-/* ページ①: テンプレート＆カラー選択画面 */
-/* ---------------------------------------------- */
-.instruction {
-    text-align: center;
-    font-size: 16px;
-    margin-bottom: 20px;
-}
-.template-selector-buttons, .color-selector-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-.select-button {
-    width: 100%; /* スマホで縦に並べる */
-    max-width: 300px; /* PCで横並びの際の最大幅 */
-    background-color: #f00;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
-    transition: background-color 0.2s;
-}
-.select-button:hover {
-    background-color: #d00;
-}
-.color-button {
-    width: calc(33.33% - 10px); /* 3列で表示 */
-    padding: 8px;
-    border: 2px solid #ccc;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 5px;
-    font-size: 14px;
-}
-.color-button.selected {
-    border-color: #1DA1F2;
-    background-color: #e0f0ff;
-    box-shadow: 0 0 0 3px #1DA1F2;
-}
-.color-default { background-color: #333; color: white; }
-.color-skyblue { background-color: #F8FAFF; color: #111; border-color: #99aaff;}
-.color-pink { background-color: #FFEFEF; color: #111; border-color: #ff9999;}
+.resume-header-container { text-align: center; margin-bottom: 30px; }
+.resume-header { font-size: 60px; font-weight: 900; line-height: 1.1; margin-bottom: 15px; letter-spacing: 2px; }
+.header-line { width: 100%; height: 6px; background: var(--border-color); border-radius: 3px; }
 
+.top-section { display: flex; gap: 30px; margin-bottom: 10px; align-items: center; min-height: 320px; }
+.icon-area { width: 320px; height: 320px; border: 6px solid var(--border-color); flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #333; position: relative; }
+.icon-area img { width: 100%; height: 100%; object-fit: cover; position: absolute; }
+#icon-placeholder { font-size: 30px; opacity: 0.5; color: #fff; z-index: 1; }
 
-/* ---------------------------------------------- */
-/* ページ②: 作成（入力）画面 */
-/* ---------------------------------------------- */
-.back-button {
-    background: none;
-    border: none;
-    color: #666;
-    cursor: pointer;
-    padding: 0;
-    margin-bottom: 15px;
-    font-size: 16px;
-}
-.resume-container {
-    width: 100%;
-    max-width: 800px; /* 画像出力の比率を維持するための最大幅 */
-    background-color: var(--base-bg-color);
-    color: var(--base-text-color);
-    padding: 20px;
-    border: 3px solid var(--base-border-color);
-    margin: 10px auto;
-    box-sizing: border-box;
-}
+.info-grid { flex-grow: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.field-box { display: flex; flex-direction: column; }
+.field-label { font-size: 22px; font-weight: 900; margin-bottom: 2px; }
+.field-value { background: #fff; color: #000; border: 4px solid var(--border-color); font-size: 34px; font-weight: 900; padding: 0 12px; display: flex; align-items: center; justify-content: center; text-align: center; height: 75px; line-height: 1.2; word-break: break-all; }
+.large { height: auto; min-height: 110px; padding: 10px; }
 
-/* 履歴書内の大見出しのスタイル */
-.resume-container .main-title { 
-    font-size: 30px; 
-    border-bottom: 3px solid var(--base-border-color);
-    margin-bottom: 15px;
-}
+.section-title { font-size: 30px; font-weight: 900; margin: 12px 0 8px; }
+.style-box { background: #fff; color: #000; padding: 20px 30px; border: 5px solid var(--border-color); height: 210px; display: flex; align-items: center; }
+.checkbox-display-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 15px; width: 100%; }
+.check-item { font-size: 22px; font-weight: 900; display: flex; align-items: center; opacity: 0.15; }
+.check-item.checked { opacity: 1; }
+.check-mark { width: 26px; height: 26px; border: 4px solid #000; margin-right: 10px; position: relative; flex-shrink: 0; }
+.checked .check-mark::after { content: ''; position: absolute; width: 12px; height: 6px; border-left: 4px solid #000; border-bottom: 4px solid #000; transform: rotate(-45deg); top: 4px; left: 3px; }
 
-/* 画像生成用の表示要素のスタイル */
-.display-text {
-    background-color: var(--display-bg-color);
-    color: var(--base-text-color);
-    padding: 8px;
-    font-size: 16px;
-    min-height: 16px;
-    width: 100%;
-    box-sizing: border-box;
-    margin-top: 5px;
-    white-space: pre-wrap; 
-    word-break: break-word;
-}
-.display-textarea {
-    min-height: 100px; /* スマホで見やすい最小高に調整 */
-}
-.input-hidden {
-    display: none !important;
-}
+.free-space { flex: 1; background: #fff; color: #000; padding: 25px; font-size: 32px; font-weight: 900; border: 5px solid var(--border-color); white-space: pre-wrap; line-height: 1.4; overflow: hidden; }
 
-.resume-container h2 {
-    font-size: 18px;
-    margin-top: 20px;
-    margin-bottom: 8px;
-    border-bottom: 2px solid var(--base-border-color);
-    padding-bottom: 4px;
-}
+.btn { display: block; width: 100%; padding: 16px; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; text-align: center; margin: 10px 0; font-size: 1rem; }
+.btn:disabled { background: #ccc !important; cursor: not-allowed; }
+.btn.primary { background: #E60012; color: #fff; }
+.btn.outline { background: #fff; color: #333; border: 2px solid #333; }
 
-/* ヘッダー情報（画像と入力欄）を縦に並べる */
-.header-info {
-    display: flex;
-    flex-direction: column; /* ★ 縦並びに固定 */
-    gap: 15px;
-    margin-bottom: 15px;
-}
-.profile-image-section {
-    width: 100%;
-    max-width: 150px; /* ★ 最大幅を制限 */
-    flex-shrink: 0;
-    text-align: center;
-    margin: 0 auto; /* 中央寄せ */
-}
-.image-preview {
-    width: 150px;
-    height: 150px;
-    border: 2px solid var(--base-border-color);
-    margin: 0 auto 10px;
-}
+.input-form { background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; }
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; font-size: 0.8rem; font-weight: 900; margin-bottom: 5px; }
+.form-group input, .form-group textarea { width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 6px; font-size: 1rem; }
+.checkbox-input-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+.checkbox-label { background: #fff; border: 1px solid #ccc; padding: 8px; font-size: 0.7rem; border-radius: 6px; cursor: pointer; text-align: center; font-weight: 900; }
+.checkbox-label.active { background: #333; color: #fff; border-color: #333; }
+.checkbox-label input { display: none; }
 
-/* 入力欄の共通スタイル */
-input[type="text"], textarea {
-    background-color: var(--input-bg-color);
-    color: var(--base-text-color);
-    border: 1px solid var(--base-border-color);
-    padding: 8px;
-    font-size: 16px;
-    width: 100%;
-    box-sizing: border-box;
-    margin-top: 5px;
-    min-height: 35px; /* ★ 縦長防止 */
-}
-textarea {
-    resize: vertical;
-    min-height: 100px; /* ★ 縦長防止 */
-}
-
-/* 入力フィールドのグリッド（スマホでは1列に） */
-.text-inputs-grid {
-    flex-grow: 1;
-    display: grid;
-    grid-template-columns: 1fr; /* ★ スマホファーストで1列に固定 */
-    gap: 10px;
-    width: 100%;
-}
-.text-inputs-grid label {
-    display: block;
-    color: var(--base-text-color);
-    font-size: 14px;
-}
-.full-width-input {
-    grid-column: 1 / 1;
-}
-
-/* チェックボックスグリッド */
-.checkbox-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2列に固定 */
-    gap: 10px 5px;
-    background-color: var(--input-bg-color);
-    padding: 15px;
-    border: 1px solid var(--base-border-color);
-    font-size: 14px;
-}
-.checkbox-grid label {
-    display: flex;
-    align-items: center;
-    white-space: normal;
-}
-.checkbox-grid input[type="checkbox"] {
-    margin-right: 5px;
-    width: auto;
-}
-
-.main-action-button {
-    width: 100%;
-    max-width: 400px;
-    margin: 20px auto 10px;
-    padding: 12px;
-    font-size: 18px;
-}
-
-/* ---------------------------------------------- */
-/* ページ③: プレビュー＆ダウンロード画面 */
-/* ---------------------------------------------- */
-#resumeCanvas {
-    width: 100%; /* 画面いっぱいに広げる */
-    height: auto;
-    display: block;
-    margin: 20px auto;
-    border: 1px solid #ccc;
-    max-width: 400px; /* プレビュー自体の最大幅 */
-}
-.x-share-info {
-    padding: 15px;
-    margin-top: 15px;
-}
-.copy-text {
-    padding: 8px;
-    font-size: 14px;
-}
-.x-share-info button {
-    padding: 6px 12px;
-}
-
-/* ---------------------------------------------- */
-/* フッターのスタイル */
-/* ---------------------------------------------- */
-.app-footer {
-    width: 100%;
-    max-width: 600px;
-    text-align: center;
-    font-size: 12px;
-    color: #666;
-    margin-top: 15px;
-    padding: 10px 0;
-}
+footer { padding: 30px 15px; text-align: center; font-size: 0.75rem; color: #888; border-top: 1px solid #eee; margin-top: auto; }
+footer a { color: #E60012; text-decoration: none; font-weight: 900; }
