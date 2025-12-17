@@ -149,7 +149,6 @@
             gap: 30px;
             margin-bottom: 15px;
             align-items: center;
-            /* heightはJSで動的にセット */
             flex-shrink: 0;
         }
 
@@ -208,7 +207,6 @@
             height: 70px;
             min-height: 70px;
             line-height: 1.1;
-            
             width: 100%;
             overflow: hidden; 
             white-space: nowrap;
@@ -238,7 +236,6 @@
         .fixed-height-container {
             display: flex;
             flex-direction: column;
-            /* heightはJSで動的にセット */
             flex-shrink: 0;
         }
 
@@ -289,17 +286,17 @@
             transform: translate(-50%, -60%) rotate(-45deg);
         }
 
-        /* フリースペース本体 */
+        /* フリースペース本体：パディングと行間を詰めて文字サイズを確保 */
         .free-space {
             flex: 1;
             background: #fff;
             color: #000;
-            padding: 25px;
+            padding: 15px 20px; /* パディングを削減 (25px -> 15px 20px) */
             font-size: 46px; 
             font-weight: 900;
             border: 6px solid var(--border-color);
             white-space: pre-wrap;
-            line-height: 1.4;
+            line-height: 1.25; /* 行間を少し詰める (1.4 -> 1.25) */
             overflow: hidden;
             height: 100%;
             width: 100%;
@@ -649,6 +646,7 @@
         function goToStep1() { switchPage('step1'); }
         function goToStep2() {
             switchPage('step2');
+            // 切り替え時のバグ対策: 少し遅らせてDOM更新後にサイズ計算を実行
             setTimeout(() => {
                 resizePreview();
                 setupCanvas();
@@ -730,10 +728,10 @@
             // フリースペースのテキストを再反映（テンプレート切り替え時のバグ対策）
             const freeSpaceInput = document.getElementById('input-freespace');
             if (freeSpaceInput) {
-                // 少し遅延させて確実にDOMが生成されてから反映
+                // 強制的にリサイズ処理を走らせる
                 setTimeout(() => {
                     updateText('freespace', freeSpaceInput.value, true);
-                }, 50);
+                }, 100);
             }
         }
 
@@ -744,12 +742,12 @@
             
             if (isAutoFit) {
                 let fontSize = 32; let minSize = 10;
-                // 初期サイズ分岐: フリースペースは大きく、それ以外は標準
+                // 初期サイズ分岐
                 if (el.classList.contains('free-space')) { 
                     fontSize = 46; 
-                    // 【修正点】活動重視・推し語り版の場合、フリースペースの最小サイズを少し大きくする
+                    // 【修正点】活動重視・推し語り版の場合、最小サイズを大きくして読みやすくする
                     if (currentTemplate !== 'simple') {
-                        minSize = 14; // 小さくなりすぎないように調整
+                        minSize = 14; 
                     }
                 } else if (el.classList.contains('large')) {
                     fontSize = 32;
