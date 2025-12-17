@@ -98,10 +98,10 @@
             position: relative;
         }
 
-        /* 描画エリア: 幅固定を強化 (min-width追加) */
+        /* 描画エリア: 幅固定を強化 */
         #capture-area {
             width: 1050px;
-            min-width: 1050px; /* 【重要】スマホでの圧縮を防止 */
+            min-width: 1050px;
             height: 1350px;
             min-height: 1350px;
             transform-origin: top left;
@@ -110,7 +110,7 @@
 
         #resume-canvas {
             width: 1050px;
-            min-width: 1050px; /* 【重要】ここも絶対に縮めない */
+            min-width: 1050px;
             height: 1350px;
             min-height: 1350px;
             background: var(--primary-bg);
@@ -128,7 +128,7 @@
             line-height: 1;
             margin-bottom: 15px;
             letter-spacing: 5px;
-            white-space: nowrap; /* 改行禁止 */
+            white-space: nowrap;
         }
         .header-line {
             width: 100%;
@@ -148,7 +148,7 @@
 
         .icon-area {
             width: 340px;
-            min-width: 340px; /* 縮小防止 */
+            min-width: 340px;
             height: 340px;
             border: 8px solid var(--border-color);
             flex-shrink: 0;
@@ -175,7 +175,14 @@
             min-width: 0;
             overflow: hidden; 
         }
-        .field-label { font-size: 22px; font-weight: 900; margin-bottom: 3px; margin-left: 5px;}
+        
+        /* 【修正箇所】ラベルの下のマージンを広げて、上線との距離を確保 */
+        .field-label {
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 8px; /* 3pxから8pxに変更 */
+            margin-left: 5px;
+        }
 
         /* 入力エリアの基本スタイル */
         .field-value {
@@ -241,7 +248,7 @@
             display: flex;
             align-items: center;
             opacity: 0.15;
-            white-space: nowrap; /* 改行禁止 */
+            white-space: nowrap;
         }
         .check-item.checked { opacity: 1; }
         .check-mark {
