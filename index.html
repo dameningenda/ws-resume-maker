@@ -108,6 +108,7 @@
             background: #fff;
         }
 
+        /* 【修正箇所 1】キャンバス自体のオーバーフローを禁止し、高さを絶対死守する */
         #resume-canvas {
             width: 1050px;
             min-width: 1050px;
@@ -118,6 +119,7 @@
             padding: 40px 50px;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* 追加：これにより何があっても1350pxを超えない */
         }
 
         /* ヘッダー周り */
@@ -176,11 +178,10 @@
             overflow: hidden; 
         }
         
-        /* 【修正箇所】ラベルの下のマージンを広げて、上線との距離を確保 */
         .field-label {
             font-size: 22px;
             font-weight: 900;
-            margin-bottom: 8px; /* 3pxから8pxに変更 */
+            margin-bottom: 8px;
             margin-left: 5px;
         }
 
@@ -224,7 +225,14 @@
 
         /* スタイル欄 */
         .section-container { margin-bottom: 10px; }
-        .flex-grow { flex: 1; display: flex; flex-direction: column; }
+
+        /* 【修正箇所 2】フリースペースの親コンテナの高さ計算を安定させる */
+        .flex-grow { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column;
+            min-height: 0; /* 追加：Flexアイテムとしての縮小を許可し、計算を正しく行う */
+        }
 
         .section-title { font-size: 34px; font-weight: 900; margin: 10px 0 5px; }
         .style-box {
@@ -271,7 +279,7 @@
             transform: translate(-50%, -60%) rotate(-45deg);
         }
 
-        /* フリースペース */
+        /* 【修正箇所 3】フリースペース本体の高さを厳格に制限する */
         .free-space {
             flex: 1;
             background: #fff;
@@ -284,6 +292,9 @@
             line-height: 1.4;
             overflow: hidden;
             min-height: 200px;
+            /* 追加：親の高さに合わせて強制的に高さを決める */
+            height: 100%; 
+            max-height: 100%;
         }
 
         /* --- 入力フォーム --- */
@@ -736,22 +747,19 @@
             loading.style.display = 'flex';
             window.scrollTo(0, 0);
 
-            // 1. サンドボックスコンテナ作成（幅1050px強制、画面外配置）
             const sandbox = document.createElement('div');
             sandbox.style.position = 'fixed';
             sandbox.style.top = '0';
-            sandbox.style.left = '-9999px'; // 画面外へ
-            sandbox.style.width = '1050px'; // 幅を絶対固定
+            sandbox.style.left = '-9999px';
+            sandbox.style.width = '1050px';
             sandbox.style.height = '1350px';
             sandbox.style.overflow = 'hidden';
             sandbox.style.zIndex = '-9999';
             document.body.appendChild(sandbox);
 
-            // 2. 履歴書の中身をクローンしてサンドボックスに入れる
             const originalCanvas = document.getElementById('resume-canvas');
             const clone = originalCanvas.cloneNode(true);
             
-            // クローン側のスタイルをリセット・強制適用
             clone.style.width = '1050px'; 
             clone.style.minWidth = '1050px'; 
             clone.style.height = '1350px';
@@ -759,9 +767,7 @@
             clone.style.margin = '0';
             sandbox.appendChild(clone);
 
-            // 3. 画像生成 (windowWidth指定でスマホ幅を無視させる)
             try {
-                // 少し待ってレンダリングを安定させる
                 await new Promise(r => setTimeout(r, 300));
 
                 const canvas = await html2canvas(clone, {
