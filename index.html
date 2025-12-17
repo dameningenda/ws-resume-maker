@@ -575,7 +575,6 @@
             "ブログやってます", "リモート対戦募集", "趣味話したい"
         ];
 
-        // テンプレート設定 (multiline: true をハンドルネームに適用)
         const templateSettings = {
             'simple': {
                 fields: [
@@ -683,7 +682,6 @@
             inputs.innerHTML = '';
             
             config.fields.forEach(f => {
-                // multilineがtrueならクラスを追加してCSSで折り返しを許可する
                 const extraClass = f.large ? 'large' : (f.multiline ? 'multiline' : '');
                 
                 grid.innerHTML += `
@@ -724,23 +722,18 @@
             if (!el) return;
             el.innerText = val;
             
-            // 自動縮小ロジック
             if (isAutoFit) {
-                let fontSize = 32; // 初期最大サイズ
-                let minSize = 8;   // 最小サイズ
+                let fontSize = 32;
+                let minSize = 8;
                 el.style.fontSize = fontSize + "px";
 
-                // 1. 完全1行固定の項目 (性別, ID, 地域など)
                 if (!el.classList.contains('large') && !el.classList.contains('multiline')) {
-                    // 横幅が溢れている限り縮小
                     while (el.scrollWidth > el.clientWidth && fontSize > minSize) {
                         fontSize--;
                         el.style.fontSize = fontSize + "px";
                     }
                 } 
-                // 2. 複数行OKの項目 (large または multiline=名前)
                 else {
-                    // 縦幅が溢れている限り縮小 (2行を超えたら小さくする)
                     while (el.scrollHeight > el.clientHeight && fontSize > minSize) {
                         fontSize--;
                         el.style.fontSize = fontSize + "px";
@@ -774,20 +767,38 @@
             }
         }
 
-        // --- 画像生成 ---
-
+        // --- 【重要】画像生成ロジックの修正版（クローン方式） ---
         async function generateImage() {
-            document.getElementById('loading-overlay').style.display = 'flex';
+            const loading = document.getElementById('loading-overlay');
+            loading.style.display = 'flex';
             window.scrollTo(0, 0);
 
-            const area = document.getElementById('capture-area');
-            const originalTransform = area.style.transform;
-            area.style.transform = "none";
+            // 1. 本来のキャンバスを取得
+            const originalCanvas = document.getElementById('resume-canvas');
 
+            // 2. キャンバスのコピー（クローン）を作成
+            const clone = originalCanvas.cloneNode(true);
+
+            // 3. クローンを画面の外（見えない場所）に配置し、サイズを強制固定する
+            // これによりスマホの画面幅の影響を受けずに描画させます
+            clone.style.position = 'fixed';
+            clone.style.top = '-10000px';
+            clone.style.left = '0px';
+            clone.style.width = '1050px'; // 本来のサイズを強制
+            clone.style.height = '1350px';
+            clone.style.transform = 'none'; // 縮小なし
+            clone.style.margin = '0';
+            clone.style.zIndex = '-9999';
+            
+            // クローンをbodyに追加（描画のため）
+            document.body.appendChild(clone);
+
+            // 少し待つ（画像の読み込みなどを安定させるため）
             await new Promise(resolve => setTimeout(resolve, 500));
 
             try {
-                const canvas = await html2canvas(document.getElementById('resume-canvas'), {
+                // 4. クローンの方を撮影する
+                const canvas = await html2canvas(clone, {
                     scale: 1,
                     useCORS: true,
                     backgroundColor: colorSettings[currentColor].bg,
@@ -804,18 +815,21 @@
                     resultImg.src = generatedBlobUrl;
                     resultImg.style.display = "block";
                     
-                    document.getElementById('loading-overlay').style.display = 'none';
+                    loading.style.display = 'none';
                     switchPage('step3');
                     
+                    // 使い終わったクローンを削除
+                    document.body.removeChild(clone);
+
                 }, 'image/png');
 
             } catch (err) {
                 console.error(err);
                 alert("画像の生成に失敗しました。");
-                document.getElementById('loading-overlay').style.display = 'none';
-                area.style.transform = originalTransform;
-            } finally {
-                area.style.transform = originalTransform;
+                loading.style.display = 'none';
+                if(document.body.contains(clone)) {
+                    document.body.removeChild(clone);
+                }
             }
         }
 
