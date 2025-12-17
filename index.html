@@ -100,7 +100,7 @@
             position: relative;
         }
 
-        /* 描画エリア: 幅と高さを絶対に死守する最強の指定 */
+        /* 描画エリア */
         #capture-area {
             width: 1050px !important;
             min-width: 1050px !important;
@@ -143,14 +143,13 @@
             border-radius: 4px;
         }
 
-        /* 【修正箇所 1】上段エリアの高さを拡張 */
+        /* 上段: アイコンと情報 (高さはJSで制御するためCSSでは基本設定のみ) */
         .top-section {
             display: flex;
             gap: 30px;
             margin-bottom: 15px;
             align-items: center;
-            height: 500px; /* 340px から 500px に変更（項目が多い版に対応） */
-            min-height: 500px;
+            /* heightはJSで動的にセット */
             flex-shrink: 0;
         }
 
@@ -235,12 +234,11 @@
         /* スタイル欄 */
         .section-container { margin-bottom: 10px; flex-shrink: 0; }
 
-        /* 【修正箇所 2】フリースペースのコンテナ高さを再計算して調整 */
+        /* フリースペースのコンテナ (高さはJSで制御) */
         .fixed-height-container {
             display: flex;
             flex-direction: column;
-            height: 300px; /* 420px から 300px に変更（上段が広がった分を調整） */
-            min-height: 300px;
+            /* heightはJSで動的にセット */
             flex-shrink: 0;
         }
 
@@ -517,7 +515,7 @@
                                     <div id="preview-styles" class="checkbox-display-group"></div>
                                 </div>
                             </div>
-                            <div class="section-container fixed-height-container">
+                            <div id="free-space-container" class="section-container fixed-height-container">
                                 <div class="section-title">▼フリースペース</div>
                                 <div id="prev-freespace" class="free-space large"></div>
                             </div>
@@ -587,8 +585,11 @@
             "ブログやってます", "リモート対戦募集", "趣味話したい"
         ];
 
+        // テンプレートごとのレイアウト高さ設定（これが重要！）
         const templateSettings = {
             'simple': {
+                topHeight: '340px', // 小さめでOK
+                freeSpaceHeight: '460px', // フリースペース広め
                 fields: [
                     { id: 'name', label: 'ハンドルネーム', span: 1, multiline: true },
                     { id: 'sex', label: '性別', span: 1 },
@@ -596,6 +597,8 @@
                 ]
             },
             'social': {
+                topHeight: '520px', // 項目多いので広げる
+                freeSpaceHeight: '280px', // フリースペース狭め
                 fields: [
                     { id: 'name', label: 'ハンドルネーム', span: 1, multiline: true },
                     { id: 'sex', label: '性別', span: 1 },
@@ -606,6 +609,8 @@
                 ]
             },
             'push': {
+                topHeight: '540px', // 項目さらに多いので広げる
+                freeSpaceHeight: '260px', // フリースペース最小
                 fields: [
                     { id: 'name', label: 'ハンドルネーム', span: 1, multiline: true },
                     { id: 'sex', label: '性別', span: 1 },
@@ -671,10 +676,22 @@
             const config = templateSettings[currentTemplate];
             const canvas = document.getElementById('resume-canvas');
             
+            // 色の設定
             canvas.style.setProperty('--primary-bg', theme.bg);
             canvas.style.setProperty('--primary-text', theme.text);
             canvas.style.setProperty('--border-color', theme.border);
 
+            // 【重要】テンプレートに応じた高さ設定の適用
+            const topSection = document.getElementById('canvas-top-area');
+            const freeSpaceContainer = document.getElementById('free-space-container');
+            
+            topSection.style.height = config.topHeight;
+            topSection.style.minHeight = config.topHeight;
+            
+            freeSpaceContainer.style.height = config.freeSpaceHeight;
+            freeSpaceContainer.style.minHeight = config.freeSpaceHeight;
+
+            // 各項目の生成
             const grid = document.getElementById('preview-info-grid');
             const inputs = document.getElementById('dynamic-inputs');
             grid.innerHTML = ''; 
@@ -694,6 +711,7 @@
                     </div>`;
             });
 
+            // スタイルの生成
             const styleDisplay = document.getElementById('preview-styles');
             const styleInputs = document.getElementById('style-inputs');
             styleDisplay.innerHTML = ''; 
