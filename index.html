@@ -303,6 +303,10 @@
             overflow: hidden;
             height: 100%;
             width: 100%;
+            /* 【修正】文字を垂直方向中央に配置 */
+            display: flex;
+            align-items: center; /* 縦中央揃え */
+            justify-content: flex-start; /* 横は左揃え */
         }
 
         /* --- 入力フォーム --- */
@@ -585,9 +589,7 @@
             "ブログやってます", "リモート対戦募集", "趣味話したい"
         ];
 
-        // 【最終調整】テンプレートごとの高さ設定
-        // BottomGapを確保するため、フリースペースの高さを少し減らしました。
-        // Top + Free の合計を「750px」に統一することで、底辺の位置を揃えています。
+        // テンプレートごとの高さ設定
         const templateSettings = {
             'simple': {
                 topHeight: '340px',
@@ -734,7 +736,13 @@
             
             if (isAutoFit) {
                 let fontSize = 32; let minSize = 10;
-                if (el.classList.contains('free-space')) { fontSize = 46; }
+                // 【修正】初期サイズ分岐: フリースペースは大きく、それ以外は標準
+                if (el.classList.contains('free-space')) { 
+                    fontSize = 46; 
+                } else if (el.classList.contains('large')) {
+                    // 他の複数行項目は32pxスタート
+                    fontSize = 32;
+                }
 
                 el.style.fontSize = fontSize + "px";
                 
