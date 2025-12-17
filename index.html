@@ -98,17 +98,21 @@
             position: relative;
         }
 
-        /* 描画エリア: 1050x1350 */
+        /* 描画エリア: 幅固定を強化 (min-width追加) */
         #capture-area {
             width: 1050px;
+            min-width: 1050px; /* 【重要】スマホでの圧縮を防止 */
             height: 1350px;
+            min-height: 1350px;
             transform-origin: top left;
             background: #fff;
         }
 
         #resume-canvas {
             width: 1050px;
+            min-width: 1050px; /* 【重要】ここも絶対に縮めない */
             height: 1350px;
+            min-height: 1350px;
             background: var(--primary-bg);
             color: var(--primary-text);
             padding: 40px 50px;
@@ -124,6 +128,7 @@
             line-height: 1;
             margin-bottom: 15px;
             letter-spacing: 5px;
+            white-space: nowrap; /* 改行禁止 */
         }
         .header-line {
             width: 100%;
@@ -143,6 +148,7 @@
 
         .icon-area {
             width: 340px;
+            min-width: 340px; /* 縮小防止 */
             height: 340px;
             border: 8px solid var(--border-color);
             flex-shrink: 0;
@@ -171,7 +177,7 @@
         }
         .field-label { font-size: 22px; font-weight: 900; margin-bottom: 3px; margin-left: 5px;}
 
-        /* 入力エリアの基本スタイル: はみ出し防止の鉄壁仕様 */
+        /* 入力エリアの基本スタイル */
         .field-value {
             background: #fff;
             color: #000;
@@ -189,18 +195,16 @@
             width: 100%;
             max-width: 100%;
             overflow: hidden; 
-            white-space: nowrap; /* 基本は1行強制 */
+            white-space: nowrap; 
             text-overflow: clip; 
         }
 
-        /* ハンドルネームなどの複数行許容クラス */
         .field-value.multiline {
-            white-space: normal; /* 折り返し許可 */
-            word-break: break-all; /* 長い英数字も強制改行 */
-            line-height: 1.1; /* 行間を詰める（2行収めるため） */
+            white-space: normal; 
+            word-break: break-all;
+            line-height: 1.1; 
         }
 
-        /* largeクラス（好きな参戦作品など） */
         .field-value.large { 
             height: auto; 
             min-height: 95px; 
@@ -237,6 +241,7 @@
             display: flex;
             align-items: center;
             opacity: 0.15;
+            white-space: nowrap; /* 改行禁止 */
         }
         .check-item.checked { opacity: 1; }
         .check-mark {
@@ -450,15 +455,9 @@
             <div class="selection-group">
                 <h2>カラーを選んでください</h2>
                 <div class="selection-grid" id="color-selector">
-                    <div class="option-card color-opt" onclick="selectColor('weiss', this)" style="background:#111; color:#fff; border:1px solid #333;">
-                        ヴァイス<br>カラー
-                    </div>
-                    <div class="option-card color-opt" onclick="selectColor('blau', this)" style="background:#F8FAFF; color:#1a3b5c; border:1px solid #1a3b5c;">
-                        ブラウ<br>カラー
-                    </div>
-                    <div class="option-card color-opt" onclick="selectColor('rose', this)" style="background:#FFEFEF; color:#5c1a1a; border:1px solid #5c1a1a;">
-                        ロゼ<br>カラー
-                    </div>
+                    <div class="option-card color-opt" onclick="selectColor('weiss', this)" style="background:#111; color:#fff; border:1px solid #333;">ヴァイス<br>カラー</div>
+                    <div class="option-card color-opt" onclick="selectColor('blau', this)" style="background:#F8FAFF; color:#1a3b5c; border:1px solid #1a3b5c;">ブラウ<br>カラー</div>
+                    <div class="option-card color-opt" onclick="selectColor('rose', this)" style="background:#FFEFEF; color:#5c1a1a; border:1px solid #5c1a1a;">ロゼ<br>カラー</div>
                 </div>
             </div>
 
@@ -477,53 +476,43 @@
                                 <div class="resume-header">ヴァイスシュヴァルツ<br>プロフィール</div>
                                 <div class="header-line"></div>
                             </div>
-
                             <div id="canvas-top-area" class="top-section">
                                 <div class="icon-area">
                                     <img id="preview-icon" src="" style="display:none;">
                                     <div id="icon-placeholder">No Image</div>
                                 </div>
-                                <div id="preview-info-grid" class="info-grid">
-                                    </div>
+                                <div id="preview-info-grid" class="info-grid"></div>
                             </div>
-
                             <div class="section-container">
                                 <div class="section-title">▼スタイル</div>
                                 <div class="style-box">
-                                    <div id="preview-styles" class="checkbox-display-group">
-                                        </div>
+                                    <div id="preview-styles" class="checkbox-display-group"></div>
                                 </div>
                             </div>
-
                             <div class="section-container flex-grow">
                                 <div class="section-title">▼フリースペース</div>
                                 <div id="prev-freespace" class="free-space"></div>
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="input-form-container">
                 <h3 class="input-header">情報を入力する</h3>
-                
                 <div class="form-group">
                     <label>アイコン画像</label>
                     <input type="file" accept="image/*" onchange="updateIcon(this)">
                 </div>
-
                 <div id="dynamic-inputs"></div>
-
                 <div class="form-group">
                     <label>プレイスタイル (複数選択可)</label>
                     <div id="style-inputs" class="checkbox-input-group"></div>
                 </div>
-
                 <div class="form-group">
                     <label>フリースペース</label>
                     <textarea oninput="updateText('freespace', this.value, false)" placeholder="自己紹介やプレイ頻度、メッセージなど自由に記入" rows="5"></textarea>
                 </div>
-
                 <div class="action-area">
                     <button id="gen-btn" class="btn primary" onclick="generateImage()">これで画像を生成する</button>
                     <button class="btn outline" onclick="goToStep1()">テンプレート選択に戻る</button>
@@ -533,21 +522,16 @@
 
         <div id="step3" class="page">
             <h2 style="margin-top:20px;">これで画像を出力しますか？</h2>
-            
             <div id="result-area">
                 <img id="generated-image" alt="生成された履歴書">
             </div>
-
             <div class="action-area">
                 <button id="download-btn" class="btn primary" onclick="downloadImage()">ダウンロードする</button>
                 <button class="btn outline" onclick="backToEdit()">作成に戻る</button>
             </div>
-
             <div class="share-area">
                 <p>X投稿用のハッシュタグはこちらからコピー！</p>
-                <div class="tag-box" id="hashtag-text">
-                    #ヴァイス履歴書 #ヴァイス好きと繋がりたい
-                </div>
+                <div class="tag-box" id="hashtag-text">#ヴァイス履歴書 #ヴァイス好きと繋がりたい</div>
                 <button class="btn sm" onclick="copyHashtag()">ハッシュタグをコピーする</button>
             </div>
         </div>
@@ -610,49 +594,37 @@
             'rose': { bg: '#FFEFEF', text: '#5c1a1a', border: '#5c1a1a' }
         };
 
-        // --- 初期化・選択系関数 ---
-
+        // --- functions ---
         function selectTemplate(t, el) {
             currentTemplate = t;
             document.querySelectorAll('#template-selector .option-card').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
             checkReady();
         }
-
         function selectColor(c, el) {
             currentColor = c;
             document.querySelectorAll('#color-selector .option-card').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
             checkReady();
         }
-
         function checkReady() {
             document.getElementById('btn-to-step2').disabled = !(currentTemplate && currentColor);
         }
-
-        function goToStep1() {
-            switchPage('step1');
-        }
-
+        function goToStep1() { switchPage('step1'); }
         function goToStep2() {
             switchPage('step2');
             setTimeout(resizePreview, 100);
             setupCanvas();
         }
-
         function switchPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             window.scrollTo(0, 0);
         }
-
         function backToEdit() {
             switchPage('step2');
             setTimeout(resizePreview, 100);
         }
-
-        // --- キャンバスセットアップ・リサイズ ---
-
         function resizePreview() {
             const area = document.getElementById('capture-area');
             const outer = document.querySelector('.preview-outer');
@@ -660,11 +632,8 @@
             area.style.transform = `scale(${scale})`;
             outer.style.height = (1350 * scale) + "px";
         }
-
         window.addEventListener('resize', () => {
-            if(document.getElementById('step2').classList.contains('active')){
-                resizePreview();
-            }
+            if(document.getElementById('step2').classList.contains('active')){ resizePreview(); }
         });
 
         function setupCanvas() {
@@ -683,13 +652,11 @@
             
             config.fields.forEach(f => {
                 const extraClass = f.large ? 'large' : (f.multiline ? 'multiline' : '');
-                
                 grid.innerHTML += `
                     <div class="field-box" style="grid-column: span ${f.span}">
                         <div class="field-label">${f.label}</div>
                         <div class="field-value ${extraClass}" id="prev-${f.id}"></div>
                     </div>`;
-                
                 inputs.innerHTML += `
                     <div class="form-group">
                         <label>${f.label}</label>
@@ -707,7 +674,6 @@
                     <div class="check-item" id="disp-style-${i}">
                         <span class="check-mark"></span>${s}
                     </div>`;
-                
                 styleInputs.innerHTML += `
                     <label class="checkbox-label" id="label-style-${i}">
                         <input type="checkbox" onchange="toggleStyle(${i}, this)">${s}
@@ -715,25 +681,20 @@
             });
         }
 
-        // --- 入力反映ロジック ---
-
         function updateText(id, val, isAutoFit) {
             const el = document.getElementById('prev-' + id);
             if (!el) return;
             el.innerText = val;
             
             if (isAutoFit) {
-                let fontSize = 32;
-                let minSize = 8;
+                let fontSize = 32; let minSize = 8;
                 el.style.fontSize = fontSize + "px";
-
                 if (!el.classList.contains('large') && !el.classList.contains('multiline')) {
                     while (el.scrollWidth > el.clientWidth && fontSize > minSize) {
                         fontSize--;
                         el.style.fontSize = fontSize + "px";
                     }
-                } 
-                else {
+                } else {
                     while (el.scrollHeight > el.clientHeight && fontSize > minSize) {
                         fontSize--;
                         el.style.fontSize = fontSize + "px";
@@ -745,13 +706,8 @@
         function toggleStyle(index, cb) {
             const disp = document.getElementById('disp-style-' + index);
             const label = document.getElementById('label-style-' + index);
-            if (cb.checked) {
-                disp.classList.add('checked');
-                label.classList.add('active');
-            } else {
-                disp.classList.remove('checked');
-                label.classList.remove('active');
-            }
+            if (cb.checked) { disp.classList.add('checked'); label.classList.add('active'); }
+            else { disp.classList.remove('checked'); label.classList.remove('active'); }
         }
 
         function updateIcon(input) {
@@ -767,37 +723,40 @@
             }
         }
 
-        // --- 【重要】画像生成ロジックの修正版（クローン方式） ---
+        // --- 強力なサンドボックス画像生成 ---
         async function generateImage() {
             const loading = document.getElementById('loading-overlay');
             loading.style.display = 'flex';
             window.scrollTo(0, 0);
 
-            // 1. 本来のキャンバスを取得
+            // 1. サンドボックスコンテナ作成（幅1050px強制、画面外配置）
+            const sandbox = document.createElement('div');
+            sandbox.style.position = 'fixed';
+            sandbox.style.top = '0';
+            sandbox.style.left = '-9999px'; // 画面外へ
+            sandbox.style.width = '1050px'; // 幅を絶対固定
+            sandbox.style.height = '1350px';
+            sandbox.style.overflow = 'hidden';
+            sandbox.style.zIndex = '-9999';
+            document.body.appendChild(sandbox);
+
+            // 2. 履歴書の中身をクローンしてサンドボックスに入れる
             const originalCanvas = document.getElementById('resume-canvas');
-
-            // 2. キャンバスのコピー（クローン）を作成
             const clone = originalCanvas.cloneNode(true);
-
-            // 3. クローンを画面の外（見えない場所）に配置し、サイズを強制固定する
-            // これによりスマホの画面幅の影響を受けずに描画させます
-            clone.style.position = 'fixed';
-            clone.style.top = '-10000px';
-            clone.style.left = '0px';
-            clone.style.width = '1050px'; // 本来のサイズを強制
-            clone.style.height = '1350px';
-            clone.style.transform = 'none'; // 縮小なし
-            clone.style.margin = '0';
-            clone.style.zIndex = '-9999';
             
-            // クローンをbodyに追加（描画のため）
-            document.body.appendChild(clone);
+            // クローン側のスタイルをリセット・強制適用
+            clone.style.width = '1050px'; 
+            clone.style.minWidth = '1050px'; 
+            clone.style.height = '1350px';
+            clone.style.transform = 'none';
+            clone.style.margin = '0';
+            sandbox.appendChild(clone);
 
-            // 少し待つ（画像の読み込みなどを安定させるため）
-            await new Promise(resolve => setTimeout(resolve, 500));
-
+            // 3. 画像生成 (windowWidth指定でスマホ幅を無視させる)
             try {
-                // 4. クローンの方を撮影する
+                // 少し待ってレンダリングを安定させる
+                await new Promise(r => setTimeout(r, 300));
+
                 const canvas = await html2canvas(clone, {
                     scale: 1,
                     useCORS: true,
@@ -818,17 +777,15 @@
                     loading.style.display = 'none';
                     switchPage('step3');
                     
-                    // 使い終わったクローンを削除
-                    document.body.removeChild(clone);
-
+                    document.body.removeChild(sandbox);
                 }, 'image/png');
 
             } catch (err) {
                 console.error(err);
                 alert("画像の生成に失敗しました。");
                 loading.style.display = 'none';
-                if(document.body.contains(clone)) {
-                    document.body.removeChild(clone);
+                if(document.body.contains(sandbox)) {
+                    document.body.removeChild(sandbox);
                 }
             }
         }
@@ -843,11 +800,7 @@
 
         function copyHashtag() {
             const text = document.getElementById('hashtag-text').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert("ハッシュタグをコピーしました！");
-            }).catch(err => {
-                alert("コピーに失敗しました。");
-            });
+            navigator.clipboard.writeText(text).then(() => alert("ハッシュタグをコピーしました！"));
         }
     </script>
 </body>
