@@ -24,7 +24,6 @@
             background-color: #f0f2f5;
             color: #333;
             padding-bottom: 40px;
-            /* スマホでの横揺れ防止 */
             overflow-x: hidden;
             width: 100%;
         }
@@ -101,7 +100,7 @@
             position: relative;
         }
 
-        /* 【重要】描画エリア: 幅と高さを絶対に死守する最強の指定 */
+        /* 描画エリア: 幅と高さを絶対に死守する最強の指定 */
         #capture-area {
             width: 1050px !important;
             min-width: 1050px !important;
@@ -111,10 +110,9 @@
             max-height: 1350px !important;
             transform-origin: top left;
             background: #fff;
-            overflow: hidden; /* 絶対にはみ出させない */
+            overflow: hidden;
         }
 
-        /* 【重要】キャンバス本体も同様に固定 */
         #resume-canvas {
             width: 1050px !important;
             min-width: 1050px !important;
@@ -125,7 +123,7 @@
             padding: 40px 50px;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* 絶対にはみ出させない */
+            overflow: hidden;
         }
 
         /* ヘッダー周り */
@@ -136,7 +134,7 @@
             line-height: 1;
             margin-bottom: 15px;
             letter-spacing: 5px;
-            white-space: nowrap; /* 改行絶対禁止 */
+            white-space: nowrap;
         }
         .header-line {
             width: 100%;
@@ -145,15 +143,15 @@
             border-radius: 4px;
         }
 
-        /* 上段: アイコンと情報 */
+        /* 【修正箇所 1】上段エリアの高さを拡張 */
         .top-section {
             display: flex;
             gap: 30px;
             margin-bottom: 15px;
             align-items: center;
-            height: 340px; /* 高さ固定 */
-            min-height: 340px;
-            flex-shrink: 0; /* 縮小禁止 */
+            height: 500px; /* 340px から 500px に変更（項目が多い版に対応） */
+            min-height: 500px;
+            flex-shrink: 0;
         }
 
         .icon-area {
@@ -178,7 +176,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            height: 100%; /* 親に合わせる */
+            height: 100%;
         }
 
         .field-box { 
@@ -208,18 +206,18 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            height: 70px; /* 高さ固定 */
+            height: 70px;
             min-height: 70px;
             line-height: 1.1;
             
             width: 100%;
             overflow: hidden; 
-            white-space: nowrap; /* 基本は1行強制 */
+            white-space: nowrap;
             text-overflow: clip; 
         }
 
         .field-value.multiline {
-            white-space: normal; /* 複数行許可 */
+            white-space: normal;
             word-break: break-all;
             line-height: 1.1; 
         }
@@ -227,7 +225,7 @@
         .field-value.large { 
             height: auto; 
             min-height: 95px;
-            max-height: 180px; /* 最大高さ制限 */
+            max-height: 180px;
             padding: 5px; 
             white-space: normal; 
             line-height: 1.2;
@@ -237,12 +235,12 @@
         /* スタイル欄 */
         .section-container { margin-bottom: 10px; flex-shrink: 0; }
 
-        /* 【重要】フリースペースのコンテナ：曖昧なflexをやめ、固定高さの配分にする */
+        /* 【修正箇所 2】フリースペースのコンテナ高さを再計算して調整 */
         .fixed-height-container {
             display: flex;
             flex-direction: column;
-            height: 420px; /* 【重要】残りの高さを計算して固定値で指定（仮） */
-            min-height: 420px;
+            height: 300px; /* 420px から 300px に変更（上段が広がった分を調整） */
+            min-height: 300px;
             flex-shrink: 0;
         }
 
@@ -293,7 +291,7 @@
             transform: translate(-50%, -60%) rotate(-45deg);
         }
 
-        /* 【重要】フリースペース本体：高さを100%にし、親の固定高さに追従させる */
+        /* フリースペース本体 */
         .free-space {
             flex: 1;
             background: #fff;
@@ -304,8 +302,8 @@
             border: 6px solid var(--border-color);
             white-space: pre-wrap;
             line-height: 1.4;
-            overflow: hidden; /* はみ出し厳禁 */
-            height: 100%; /* 親の高さに合わせる */
+            overflow: hidden;
+            height: 100%;
             width: 100%;
         }
 
@@ -724,7 +722,6 @@
 
                 el.style.fontSize = fontSize + "px";
                 
-                // 【重要】高さを明示したので、clientHeightが正しく取得でき、縮小が機能する
                 if (!el.classList.contains('large') && !el.classList.contains('multiline')) {
                     while (el.scrollWidth > el.clientWidth && fontSize > minSize) {
                         fontSize--;
