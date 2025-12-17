@@ -143,7 +143,7 @@
             border-radius: 4px;
         }
 
-        /* 上段: アイコンと情報 (高さはJSで制御するためCSSでは基本設定のみ) */
+        /* 上段: アイコンと情報 */
         .top-section {
             display: flex;
             gap: 30px;
@@ -585,11 +585,13 @@
             "ブログやってます", "リモート対戦募集", "趣味話したい"
         ];
 
-        // テンプレートごとのレイアウト高さ設定（これが重要！）
+        // 【最終調整】テンプレートごとの高さ設定
+        // BottomGapを確保するため、フリースペースの高さを少し減らしました。
+        // Top + Free の合計を「750px」に統一することで、底辺の位置を揃えています。
         const templateSettings = {
             'simple': {
-                topHeight: '340px', // 小さめでOK
-                freeSpaceHeight: '460px', // フリースペース広め
+                topHeight: '340px',
+                freeSpaceHeight: '410px', 
                 fields: [
                     { id: 'name', label: 'ハンドルネーム', span: 1, multiline: true },
                     { id: 'sex', label: '性別', span: 1 },
@@ -597,8 +599,8 @@
                 ]
             },
             'social': {
-                topHeight: '520px', // 項目多いので広げる
-                freeSpaceHeight: '280px', // フリースペース狭め
+                topHeight: '500px', 
+                freeSpaceHeight: '250px',
                 fields: [
                     { id: 'name', label: 'ハンドルネーム', span: 1, multiline: true },
                     { id: 'sex', label: '性別', span: 1 },
@@ -609,8 +611,8 @@
                 ]
             },
             'push': {
-                topHeight: '540px', // 項目さらに多いので広げる
-                freeSpaceHeight: '260px', // フリースペース最小
+                topHeight: '520px', 
+                freeSpaceHeight: '230px', 
                 fields: [
                     { id: 'name', label: 'ハンドルネーム', span: 1, multiline: true },
                     { id: 'sex', label: '性別', span: 1 },
@@ -676,12 +678,10 @@
             const config = templateSettings[currentTemplate];
             const canvas = document.getElementById('resume-canvas');
             
-            // 色の設定
             canvas.style.setProperty('--primary-bg', theme.bg);
             canvas.style.setProperty('--primary-text', theme.text);
             canvas.style.setProperty('--border-color', theme.border);
 
-            // 【重要】テンプレートに応じた高さ設定の適用
             const topSection = document.getElementById('canvas-top-area');
             const freeSpaceContainer = document.getElementById('free-space-container');
             
@@ -691,7 +691,6 @@
             freeSpaceContainer.style.height = config.freeSpaceHeight;
             freeSpaceContainer.style.minHeight = config.freeSpaceHeight;
 
-            // 各項目の生成
             const grid = document.getElementById('preview-info-grid');
             const inputs = document.getElementById('dynamic-inputs');
             grid.innerHTML = ''; 
@@ -711,7 +710,6 @@
                     </div>`;
             });
 
-            // スタイルの生成
             const styleDisplay = document.getElementById('preview-styles');
             const styleInputs = document.getElementById('style-inputs');
             styleDisplay.innerHTML = ''; 
