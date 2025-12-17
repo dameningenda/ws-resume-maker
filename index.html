@@ -127,12 +127,12 @@
         }
 
         /* ヘッダー周り */
-        .resume-header-container { text-align: center; margin-bottom: 25px; flex-shrink: 0; }
+        .resume-header-container { text-align: center; margin-bottom: 20px; flex-shrink: 0; }
         .resume-header {
             font-size: 65px;
             font-weight: 900;
             line-height: 1;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             letter-spacing: 5px;
             white-space: nowrap;
         }
@@ -146,9 +146,10 @@
         /* 上段: アイコンと情報 */
         .top-section {
             display: flex;
-            gap: 30px;
-            margin-bottom: 15px;
+            gap: 25px; /* ギャップを少し詰める */
+            margin-bottom: 10px;
             align-items: center;
+            /* heightはJSで動的にセット */
             flex-shrink: 0;
         }
 
@@ -173,7 +174,7 @@
             flex-grow: 1;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 8px; /* グリッド間隔を詰める */
             height: 100%;
         }
 
@@ -187,7 +188,7 @@
         .field-label {
             font-size: 22px;
             font-weight: 900;
-            margin-bottom: 5px;
+            margin-bottom: 2px; /* ラベル下の余白を詰める */
             margin-left: 5px;
             white-space: nowrap;
         }
@@ -204,8 +205,8 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            height: 70px;
-            min-height: 70px;
+            height: 65px; /* 【修正】高さを70px→65pxに圧縮 */
+            min-height: 65px;
             line-height: 1.1;
             width: 100%;
             overflow: hidden; 
@@ -221,7 +222,7 @@
 
         .field-value.large { 
             height: auto; 
-            min-height: 95px;
+            min-height: 90px; /* 少し詰める */
             max-height: 180px;
             padding: 5px; 
             white-space: normal; 
@@ -230,7 +231,7 @@
         }
 
         /* スタイル欄 */
-        .section-container { margin-bottom: 10px; flex-shrink: 0; }
+        .section-container { margin-bottom: 8px; flex-shrink: 0; }
 
         /* フリースペースのコンテナ (高さはJSで制御) */
         .fixed-height-container {
@@ -239,7 +240,7 @@
             flex-shrink: 0;
         }
 
-        .section-title { font-size: 34px; font-weight: 900; margin: 10px 0 5px; white-space: nowrap; }
+        .section-title { font-size: 34px; font-weight: 900; margin: 8px 0 4px; white-space: nowrap; }
         .style-box {
             background: #fff;
             color: #000;
@@ -291,12 +292,12 @@
             flex: 1;
             background: #fff;
             color: #000;
-            padding: 15px 20px; /* パディングを削減 (25px -> 15px 20px) */
+            padding: 10px 15px; /* 【修正】パディングをさらに削減してエリア確保 */
             font-size: 46px; 
             font-weight: 900;
             border: 6px solid var(--border-color);
             white-space: pre-wrap;
-            line-height: 1.25; /* 行間を少し詰める (1.4 -> 1.25) */
+            line-height: 1.15; /* 【修正】行間をさらに詰めて大きく表示 */
             overflow: hidden;
             height: 100%;
             width: 100%;
@@ -585,7 +586,9 @@
             "ブログやってます", "リモート対戦募集", "趣味話したい"
         ];
 
-        // テンプレートごとの高さ設定
+        // 【最終調整】テンプレートごとの高さ設定
+        // 上の項目欄をさらに圧縮し、フリースペースに回す
+        // 全体のバランスを見直し、フリースペースの高さを確保
         const templateSettings = {
             'simple': {
                 topHeight: '340px',
@@ -597,8 +600,8 @@
                 ]
             },
             'social': {
-                topHeight: '500px', 
-                freeSpaceHeight: '250px',
+                topHeight: '480px', // 500 -> 480 (20px圧縮)
+                freeSpaceHeight: '270px', // 250 -> 270 (20px拡大)
                 fields: [
                     { id: 'name', label: 'ハンドルネーム', span: 1, multiline: true },
                     { id: 'sex', label: '性別', span: 1 },
@@ -609,8 +612,8 @@
                 ]
             },
             'push': {
-                topHeight: '520px', 
-                freeSpaceHeight: '230px', 
+                topHeight: '500px', // 520 -> 500 (20px圧縮)
+                freeSpaceHeight: '250px', // 230 -> 250 (20px拡大)
                 fields: [
                     { id: 'name', label: 'ハンドルネーム', span: 1, multiline: true },
                     { id: 'sex', label: '性別', span: 1 },
@@ -646,7 +649,6 @@
         function goToStep1() { switchPage('step1'); }
         function goToStep2() {
             switchPage('step2');
-            // 切り替え時のバグ対策: 少し遅らせてDOM更新後にサイズ計算を実行
             setTimeout(() => {
                 resizePreview();
                 setupCanvas();
@@ -684,11 +686,16 @@
             const topSection = document.getElementById('canvas-top-area');
             const freeSpaceContainer = document.getElementById('free-space-container');
             
-            topSection.style.height = config.topHeight;
-            topSection.style.minHeight = config.topHeight;
+            // 【重要】高さを適用する前にリセットする処理を入れる（バグ対策）
+            topSection.style.height = ''; 
+            freeSpaceContainer.style.height = ''; 
             
-            freeSpaceContainer.style.height = config.freeSpaceHeight;
-            freeSpaceContainer.style.minHeight = config.freeSpaceHeight;
+            setTimeout(() => {
+                topSection.style.height = config.topHeight;
+                topSection.style.minHeight = config.topHeight;
+                freeSpaceContainer.style.height = config.freeSpaceHeight;
+                freeSpaceContainer.style.minHeight = config.freeSpaceHeight;
+            }, 10);
 
             const grid = document.getElementById('preview-info-grid');
             const inputs = document.getElementById('dynamic-inputs');
@@ -745,9 +752,9 @@
                 // 初期サイズ分岐
                 if (el.classList.contains('free-space')) { 
                     fontSize = 46; 
-                    // 【修正点】活動重視・推し語り版の場合、最小サイズを大きくして読みやすくする
+                    // 【修正点】活動重視・推し語り版でも最小サイズを確保し、読める大きさを維持する
                     if (currentTemplate !== 'simple') {
-                        minSize = 14; 
+                        minSize = 16; /* 14から16にアップ */
                     }
                 } else if (el.classList.contains('large')) {
                     fontSize = 32;
