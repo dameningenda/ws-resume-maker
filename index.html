@@ -303,10 +303,9 @@
             overflow: hidden;
             height: 100%;
             width: 100%;
-            /* 【修正】文字を垂直方向中央に配置 */
             display: flex;
-            align-items: center; /* 縦中央揃え */
-            justify-content: flex-start; /* 横は左揃え */
+            align-items: center;
+            justify-content: flex-start;
         }
 
         /* --- 入力フォーム --- */
@@ -541,7 +540,7 @@
                 </div>
                 <div class="form-group">
                     <label>フリースペース</label>
-                    <textarea oninput="updateText('freespace', this.value, true)" placeholder="自己紹介やプレイ頻度、メッセージなど自由に記入" rows="5"></textarea>
+                    <textarea id="input-freespace" oninput="updateText('freespace', this.value, true)" placeholder="自己紹介やプレイ頻度、メッセージなど自由に記入" rows="5"></textarea>
                 </div>
                 <div class="action-area">
                     <button id="gen-btn" class="btn primary" onclick="generateImage()">これで画像を生成する</button>
@@ -727,6 +726,15 @@
                         <input type="checkbox" onchange="toggleStyle(${i}, this)">${s}
                     </label>`;
             });
+
+            // フリースペースのテキストを再反映（テンプレート切り替え時のバグ対策）
+            const freeSpaceInput = document.getElementById('input-freespace');
+            if (freeSpaceInput) {
+                // 少し遅延させて確実にDOMが生成されてから反映
+                setTimeout(() => {
+                    updateText('freespace', freeSpaceInput.value, true);
+                }, 50);
+            }
         }
 
         function updateText(id, val, isAutoFit) {
@@ -736,11 +744,14 @@
             
             if (isAutoFit) {
                 let fontSize = 32; let minSize = 10;
-                // 【修正】初期サイズ分岐: フリースペースは大きく、それ以外は標準
+                // 初期サイズ分岐: フリースペースは大きく、それ以外は標準
                 if (el.classList.contains('free-space')) { 
                     fontSize = 46; 
+                    // 【修正点】活動重視・推し語り版の場合、フリースペースの最小サイズを少し大きくする
+                    if (currentTemplate !== 'simple') {
+                        minSize = 14; // 小さくなりすぎないように調整
+                    }
                 } else if (el.classList.contains('large')) {
-                    // 他の複数行項目は32pxスタート
                     fontSize = 32;
                 }
 
