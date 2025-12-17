@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ヴァイスシュヴァルツ 履歴書メーカー</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,6 +24,9 @@
             background-color: #f0f2f5;
             color: #333;
             padding-bottom: 40px;
+            /* スマホでの横揺れ防止 */
+            overflow-x: hidden;
+            width: 100%;
         }
 
         .container {
@@ -98,40 +101,42 @@
             position: relative;
         }
 
-        /* 描画エリア: 幅固定を強化 */
+        /* 【重要】描画エリア: 幅と高さを絶対に死守する最強の指定 */
         #capture-area {
-            width: 1050px;
-            min-width: 1050px;
-            height: 1350px;
-            min-height: 1350px;
+            width: 1050px !important;
+            min-width: 1050px !important;
+            max-width: 1050px !important;
+            height: 1350px !important;
+            min-height: 1350px !important;
+            max-height: 1350px !important;
             transform-origin: top left;
             background: #fff;
+            overflow: hidden; /* 絶対にはみ出させない */
         }
 
-        /* キャンバス自体のオーバーフローを禁止し、高さを絶対死守する */
+        /* 【重要】キャンバス本体も同様に固定 */
         #resume-canvas {
-            width: 1050px;
-            min-width: 1050px;
-            height: 1350px;
-            min-height: 1350px;
+            width: 1050px !important;
+            min-width: 1050px !important;
+            height: 1350px !important;
+            min-height: 1350px !important;
             background: var(--primary-bg);
             color: var(--primary-text);
             padding: 40px 50px;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            position: relative; /* 子要素の絶対配置の基準にする */
+            overflow: hidden; /* 絶対にはみ出させない */
         }
 
         /* ヘッダー周り */
-        .resume-header-container { text-align: center; margin-bottom: 25px; }
+        .resume-header-container { text-align: center; margin-bottom: 25px; flex-shrink: 0; }
         .resume-header {
             font-size: 65px;
             font-weight: 900;
             line-height: 1;
             margin-bottom: 15px;
             letter-spacing: 5px;
-            white-space: nowrap;
+            white-space: nowrap; /* 改行絶対禁止 */
         }
         .header-line {
             width: 100%;
@@ -146,13 +151,16 @@
             gap: 30px;
             margin-bottom: 15px;
             align-items: center;
+            height: 340px; /* 高さ固定 */
             min-height: 340px;
+            flex-shrink: 0; /* 縮小禁止 */
         }
 
         .icon-area {
             width: 340px;
             min-width: 340px;
             height: 340px;
+            min-height: 340px;
             border: 8px solid var(--border-color);
             flex-shrink: 0;
             display: flex;
@@ -170,6 +178,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
+            height: 100%; /* 親に合わせる */
         }
 
         .field-box { 
@@ -182,8 +191,9 @@
         .field-label {
             font-size: 22px;
             font-weight: 900;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             margin-left: 5px;
+            white-space: nowrap;
         }
 
         /* 入力エリアの基本スタイル */
@@ -198,26 +208,26 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            height: 70px;
+            height: 70px; /* 高さ固定 */
+            min-height: 70px;
             line-height: 1.1;
             
             width: 100%;
-            max-width: 100%;
             overflow: hidden; 
-            white-space: nowrap; 
+            white-space: nowrap; /* 基本は1行強制 */
             text-overflow: clip; 
         }
 
         .field-value.multiline {
-            white-space: normal; 
+            white-space: normal; /* 複数行許可 */
             word-break: break-all;
             line-height: 1.1; 
         }
 
         .field-value.large { 
             height: auto; 
-            min-height: 95px; 
-            max-height: 180px;
+            min-height: 95px;
+            max-height: 180px; /* 最大高さ制限 */
             padding: 5px; 
             white-space: normal; 
             line-height: 1.2;
@@ -225,24 +235,28 @@
         }
 
         /* スタイル欄 */
-        .section-container { margin-bottom: 10px; }
+        .section-container { margin-bottom: 10px; flex-shrink: 0; }
 
-        /* 【重要修正】flex-growをやめ、高さ計算をJSで行うためシンプルにする */
-        .flex-grow { 
-            display: flex; 
+        /* 【重要】フリースペースのコンテナ：曖昧なflexをやめ、固定高さの配分にする */
+        .fixed-height-container {
+            display: flex;
             flex-direction: column;
-            /* height: 100%; ← これを削除し、親のflexに依存しないようにする */
+            height: 420px; /* 【重要】残りの高さを計算して固定値で指定（仮） */
+            min-height: 420px;
+            flex-shrink: 0;
         }
 
-        .section-title { font-size: 34px; font-weight: 900; margin: 10px 0 5px; }
+        .section-title { font-size: 34px; font-weight: 900; margin: 10px 0 5px; white-space: nowrap; }
         .style-box {
             background: #fff;
             color: #000;
             padding: 15px 20px;
             border: 6px solid var(--border-color);
             height: 230px;
+            min-height: 230px;
             display: flex;
             align-items: center;
+            overflow: hidden;
         }
         .checkbox-display-group {
             display: grid;
@@ -279,8 +293,9 @@
             transform: translate(-50%, -60%) rotate(-45deg);
         }
 
-        /* 【重要修正】フリースペース: 最初は高さを指定せず、JSで計算後に確定させる */
+        /* 【重要】フリースペース本体：高さを100%にし、親の固定高さに追従させる */
         .free-space {
+            flex: 1;
             background: #fff;
             color: #000;
             padding: 25px;
@@ -289,8 +304,9 @@
             border: 6px solid var(--border-color);
             white-space: pre-wrap;
             line-height: 1.4;
-            overflow: hidden;
-            /* JSでheightを動的にセットする */
+            overflow: hidden; /* はみ出し厳禁 */
+            height: 100%; /* 親の高さに合わせる */
+            width: 100%;
         }
 
         /* --- 入力フォーム --- */
@@ -503,7 +519,7 @@
                                     <div id="preview-styles" class="checkbox-display-group"></div>
                                 </div>
                             </div>
-                            <div class="section-container flex-grow">
+                            <div class="section-container fixed-height-container">
                                 <div class="section-title">▼フリースペース</div>
                                 <div id="prev-freespace" class="free-space large"></div>
                             </div>
@@ -629,8 +645,7 @@
             switchPage('step2');
             setTimeout(() => {
                 resizePreview();
-                setupCanvas(); // キャンバス生成
-                setTimeout(adjustFreeSpaceHeight, 100); // 【重要】描画後に高さを計算する
+                setupCanvas();
             }, 100);
         }
         function switchPage(pageId) {
@@ -652,42 +667,6 @@
         window.addEventListener('resize', () => {
             if(document.getElementById('step2').classList.contains('active')){ resizePreview(); }
         });
-
-        // 【新機能】フリースペースの高さを強制的に計算して埋める関数
-        function adjustFreeSpaceHeight() {
-            const canvas = document.getElementById('resume-canvas');
-            const freeSpace = document.getElementById('prev-freespace');
-            
-            // キャンバスの下パディング(40px)を考慮して、底辺までの距離を計算
-            // キャンバスの全高(1350) - 現在の要素のY座標 - 下余白(40) - 微調整(10)
-            const canvasRect = canvas.getBoundingClientRect();
-            const spaceRect = freeSpace.getBoundingClientRect();
-            
-            // キャンバス内での相対位置から高さを決定
-            // (要素のTop - キャンバスのTop) = キャンバス上部からの距離
-            const offsetTop = spaceRect.top - canvasRect.top;
-            
-            // 残りの高さ = 全体(1350) - 上部からの距離(offsetTop) - 下パディング(40) - 枠線等のバッファ(20)
-            // scaleがかかっているため、getBoundingClientRectの計算ではなく論理値で計算する必要がある
-            
-            // 簡易計算：フリースペースの上にある要素の高さを積み上げる方式は複雑なため、
-            // 逆に「canvasのheight(1350) - canvasのpadding-bottom(40) - フリースペースのoffsetTop」で計算
-            // ただしtransform:scaleがかかっているとoffsetTopも縮小されるため、scaleを解除して計算するのが確実だが、
-            // ここでは要素の位置関係が変わらない前提で、親コンテナ(flex-grow)の内部高さを取得する
-            
-            const container = document.querySelector('.section-container.flex-grow');
-            // タイトル(▼フリースペース)の高さを引く
-            const titleHeight = 60; // 概算
-            // コンテナの高さを親(canvas)の残りで埋める
-            
-            // シンプルかつ最強の方法：
-            // フリースペースを absolute配置で bottom: 40px に固定してしまう
-            // これなら計算ミスが起きない
-            
-            // CSS側で対応できないため、JSで強制スタイル適用
-            // 親(flex-grow)を position:relative にし、flexを解除して高さを指定
-            // これは複雑になるため、もっと単純に「中身の文字サイズ調整」を確実に行う
-        }
 
         function setupCanvas() {
             const theme = colorSettings[currentColor];
@@ -732,25 +711,6 @@
                         <input type="checkbox" onchange="toggleStyle(${i}, this)">${s}
                     </label>`;
             });
-            
-            // 【重要】フリースペースの高さをCSSで強制的に計算させる（calc）
-            // 上部の要素（ヘッダー+情報+スタイル）の大まかな高さを引く
-            // テンプレートによって上部の高さが違うため、動的に高さをセットする
-            setTimeout(() => {
-                const freeSpace = document.getElementById('prev-freespace');
-                // canvasのpadding 40px * 2 = 80px
-                // header = 約100px
-                // top-section = 340px + margin 15px = 355px
-                // style-section = 40px(title) + 230px(box) + margin 10px = 280px
-                // free-title = 40px
-                // 合計 約800px 〜 900px が埋まっている
-                // 残り 1350 - 900 = 450px 程度がフリースペース
-                
-                // 正確に「キャンバスの一番下まで」伸ばす
-                const container = document.querySelector('.section-container.flex-grow');
-                container.style.flex = "1"; // 残り全部
-                freeSpace.style.height = "100%"; // 親いっぱい
-            }, 50);
         }
 
         function updateText(id, val, isAutoFit) {
@@ -763,7 +723,8 @@
                 if (el.classList.contains('free-space')) { fontSize = 46; }
 
                 el.style.fontSize = fontSize + "px";
-
+                
+                // 【重要】高さを明示したので、clientHeightが正しく取得でき、縮小が機能する
                 if (!el.classList.contains('large') && !el.classList.contains('multiline')) {
                     while (el.scrollWidth > el.clientWidth && fontSize > minSize) {
                         fontSize--;
@@ -798,6 +759,7 @@
             }
         }
 
+        // --- 強力なサンドボックス画像生成 ---
         async function generateImage() {
             const loading = document.getElementById('loading-overlay');
             loading.style.display = 'flex';
@@ -823,18 +785,8 @@
             clone.style.margin = '0';
             sandbox.appendChild(clone);
 
-            // クローン側のフリースペースの高さを再計算（念のため）
-            const freeSpaceClone = clone.querySelector('.free-space');
-            if(freeSpaceClone){
-               // Flexboxで伸びきっていない場合があるので強制的に伸ばす
-               // 親(flex-grow)の高さを100%にする
-               const parent = freeSpaceClone.parentElement;
-               parent.style.flex = "1 1 auto";
-               freeSpaceClone.style.height = "100%";
-            }
-
             try {
-                await new Promise(r => setTimeout(r, 500)); // 待ち時間を少し延長
+                await new Promise(r => setTimeout(r, 500));
 
                 const canvas = await html2canvas(clone, {
                     scale: 1,
