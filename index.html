@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -226,7 +226,6 @@
         /* スタイル欄 */
         .section-container { margin-bottom: 10px; }
 
-        /* フリースペースの親コンテナの高さ計算を安定させる */
         .flex-grow { 
             flex: 1; 
             display: flex; 
@@ -285,7 +284,7 @@
             background: #fff;
             color: #000;
             padding: 25px;
-            font-size: 34px;
+            font-size: 46px; /* 【修正】初期サイズを大きく変更 (34px -> 46px) */
             font-weight: 900;
             border: 6px solid var(--border-color);
             white-space: pre-wrap;
@@ -704,8 +703,14 @@
             el.innerText = val;
             
             if (isAutoFit) {
-                let fontSize = 34; // フリースペースも他と同じサイズからスタート
+                let fontSize = 32; // 通常項目の基本サイズ
                 let minSize = 10;
+
+                // 【修正】フリースペースの場合、初期サイズを大きくする (32px -> 46px)
+                if (el.classList.contains('free-space')) {
+                    fontSize = 46; 
+                }
+
                 el.style.fontSize = fontSize + "px";
 
                 if (!el.classList.contains('large') && !el.classList.contains('multiline')) {
